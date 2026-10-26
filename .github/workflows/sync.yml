@@ -1,0 +1,27 @@
+name: mumu-keepalive
+on:
+  schedule:
+    - cron: '*/5 * * * *'
+  workflow_dispatch: {}
+permissions:
+  contents: write
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: wake backend
+        run: |
+          CODE=$(curl -s -m 60 'https://mumu-bysj.app.workbuddy.host/Mu_ashare/strategy_refresh?sharecode=ROGGMNMPJ6' -o /dev/null -w '%{http_code}')
+          echo "wake result: HTTP $CODE"
+      - name: daily heartbeat (prevent 60-day auto-disable)
+        run: |
+          if [ "$(date -u +%H%M)" = "0310" ]; then
+            git clone -q "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/CatchFishTang/mumu-keepalive" /tmp/repo
+            cd /tmp/repo
+            date -u +%F > .heartbeat
+            git add .heartbeat
+            git -c user.email=bot@users.noreply.github.com -c user.name=keepalive-bot commit -qm "heartbeat $(date -u +%F)" && git push -q
+            echo "heartbeat committed"
+          else
+            echo "not heartbeat time, skip"
+          fi
