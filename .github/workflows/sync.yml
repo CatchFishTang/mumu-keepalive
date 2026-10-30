@@ -11,7 +11,7 @@ jobs:
     steps:
       - name: wake backend
         run: |
-          CODE=$(curl -s -m 60 'https://mumu-bysj.app.workbuddy.host/Mu_ashare/strategy_refresh?sharecode=ROGGMNMPJ6' -o /dev/null -w '%{http_code}')
+          CODE=$(curl -s -m 60 'https://muzhong-info.app.workbuddy.host/Mu_ashare/strategy_refresh?sharecode=YPCNZICYBO' -o /dev/null -w '%{http_code}')
           echo "wake result: HTTP $CODE"
       - name: daily heartbeat (prevent 60-day auto-disable)
         run: |
